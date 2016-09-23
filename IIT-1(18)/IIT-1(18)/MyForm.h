@@ -153,7 +153,6 @@ namespace IIT118 {
 			System::IO::StreamReader ^ sr = gcnew
 				System::IO::StreamReader(myFileDialog.FileName);
 			richTextBox1->Text = sr->ReadToEnd();
-			Strichka 
 			sr->Close();
 		}
 		
