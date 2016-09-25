@@ -1,25 +1,51 @@
 #include "Strichka.h"
-#include <string>
-#include <regex>
-#include <unordered_map>
-using namespace std;
-Strichka::Strichka(string a)
+Strichka::Strichka(String^ str)
 {
-	value = a;
+	this->str = str;
 }
 
-int Strichka::getCount() {
-	const std::regex reg("\\w+");
+SortedDictionary<String^, int>^ Strichka::getDictionary(bool a) {
+	SortedDictionary<String^, int>^ MyDictionary = gcnew SortedDictionary<String^,int>();
+	const wchar_t seperator[] = {' ',',' };
+	array<String^>^ mas = str->Split(*seperator);
 
-	std::unordered_map<std::string, int> words;
-	for (std::sregex_iterator next(_value.begin(), _value.end(), reg), end; next != end; ++next)
-	{
-		std::string word = next->str();
-		std::transform(word.begin(), word.end(), word.begin(), tolower);
-		++words[word];
+	for (int i = 0; i < mas->Length; i++) {
+		mas[i] = mas[i]->ToLowerInvariant();
 	}
 
-	
-	return std::count_if(words.begin(), words.end(), [](const auto &p) { return p.second > 1; });
+	for (int i = 0; i < mas->Length; i++) {
+		if (!(*MyDictionary).ContainsKey(mas[i])) {
+			(*MyDictionary).Add(mas[i],1);
+		}
+		else {
+			(*MyDictionary).default[mas[i]]++;
+		}
+	}
+
+	dictionary = MyDictionary;
+	SortedDictionary<String^, int>^ dictionary = gcnew SortedDictionary<String^, int>();;
+
+	if (a) {
+		String^ max_key; int max = 0;
+		for (SortedDictionary<String^, int>::Enumerator myLich = MyDictionary->GetEnumerator(); myLich.MoveNext();) {
+			if (myLich.Current.Value > max) {
+				max = myLich.Current.Value;
+				max_key = myLich.Current.Key;
+			}
+		}
+		MyDictionary->Remove(max_key);
+	}
+	if (a) {
+		String^ max_key; int min = 1000;
+		for (SortedDictionary<String^, int>::Enumerator myLich = MyDictionary->GetEnumerator(); myLich.MoveNext();) {
+			if (myLich.Current.Value < min) {
+				min = myLich.Current.Value;
+				max_key = myLich.Current.Key;
+			}
+		}
+		MyDictionary->Remove(max_key);
+	}
+
+	return MyDictionary;
 }
 
